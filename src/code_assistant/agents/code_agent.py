@@ -4,7 +4,7 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from langchain.agents import AgentExecutor, create_react_agent
+from langchain_classic.agents import AgentExecutor, create_react_agent
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_openai import ChatOpenAI
@@ -49,11 +49,14 @@ class CodeAssistantAgent:
         self._embedding_service = embedding_service or EmbeddingService()
 
         # Initialize LLM
-        self._llm = ChatOpenAI(
-            model=self._settings.openai_model,
-            temperature=0,
-            api_key=self._settings.openai_api_key,
-        )
+        llm_kwargs = {
+            "model": self._settings.openai_model,
+            "temperature": 0,
+            "api_key": self._settings.openai_api_key,
+        }
+        if self._settings.api_base_url:
+            llm_kwargs["base_url"] = self._settings.api_base_url
+        self._llm = ChatOpenAI(**llm_kwargs)
 
         # Initialize tools
         self._tools = self._create_tools()

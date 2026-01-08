@@ -20,6 +20,10 @@ class Settings(BaseSettings):
 
     # OpenAI Configuration
     openai_api_key: str = Field(..., description="OpenAI API key")
+    api_base_url: str | None = Field(
+        default=None,
+        description="Custom OpenAI API base URL",
+    )
     openai_model: str = Field(
         default="gpt-4-turbo-preview",
         description="OpenAI model to use",
